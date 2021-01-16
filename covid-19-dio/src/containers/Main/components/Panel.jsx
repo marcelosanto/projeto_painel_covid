@@ -6,13 +6,7 @@ import { CardPanelContentStyled, ItemStyled } from './style'
 
 const navigatorHasShare = navigator.share
 
-export default function Panel({
-  updateAt,
-  onChange,
-  data,
-  country,
-  getCovidData,
-}) {
+function Panel({ updateAt, onChange, data, country, getCovidData }) {
   const { cases, recovered, deaths, todayCases, todayDeaths } = data
 
   const renderCountries = (country, index) => (
@@ -23,6 +17,20 @@ export default function Panel({
       </ItemStyled>
     </MenuItem>
   )
+
+  const copyInfo = () => {
+    navigator.clipboard.writeText(textCovid19)
+  }
+
+  const textCovid19 = `País: ${country} - recuperados: ${recovered}`
+
+  const shareInfo = () => {
+    navigator.share({
+      title: `Dados do Covid19 - ${country}`,
+      text: textCovid19,
+      url: 'https://sitename.netflify.app',
+    })
+  }
 
   const renderShareButton = (
     <div>
@@ -59,7 +67,10 @@ export default function Panel({
             </Select>
           </div>
         </div>
+        {navigatorHasShare ? renderShareButton : renderCopyButton}
       </CardPanelContentStyled>
     </Card>
   )
 }
+
+export default memo(Panel)
